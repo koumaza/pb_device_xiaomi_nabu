@@ -39,7 +39,7 @@ $(call find-copy-subdir-files,*,$(LOCAL_PATH)/recovery/root/system,$(TARGET_COPY
 
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := nabu
-PRODUCT_NAME := twrp_nabu
+PRODUCT_NAME := omni_nabu
 PRODUCT_BRAND := Xiaomi
 PRODUCT_MODEL := 21051182G
 PRODUCT_MANUFACTURER := xiaomi
