@@ -17,9 +17,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-     $(LOCAL_DIR)/twrp_nabu.mk
+     $(LOCAL_DIR)/omni_nabu.mk
 
 COMMON_LUNCH_CHOICES := \
-    twrp_nabu-user \
-    twrp_nabu-userdebug \
-    twrp_nabu-eng
+    omni_nabu-user \
+    omni_nabu-userdebug \
+    omni_nabu-eng
