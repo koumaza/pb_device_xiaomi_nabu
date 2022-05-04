@@ -1,12 +1,10 @@
 name: Trigger compiling
-
 on:
   workflow_dispatch:
   push:
-    branches: ['11']
+    branches: [ 11 ]
   schedule:
-    - cron: '* */4 * * *'
-    
+    - cron: '* */4 * * *'    
 jobs:
   Trigger:
     uses: ./.github/workflows/compile.yaml
