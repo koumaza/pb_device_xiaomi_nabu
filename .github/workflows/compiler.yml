@@ -53,6 +53,9 @@ jobs:
 
     - name: Check Out
       uses: actions/checkout@main
+      
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@main
 
     - name: Prepare the environment
       run: |
@@ -109,6 +112,8 @@ jobs:
       run: |
         PATH=~/bin:$PATH
         cd ${{ steps.pwd.outputs.pwd }}
+        export USE_CCACHE=1
+        ccache -M 35G
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
         source build/envsetup.sh
