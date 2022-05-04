@@ -2,7 +2,7 @@ name: Trigger compiling
 on:
   workflow_dispatch:
   push:
-    branches: [ 11 ]
+    branches: [ "11" ]
   schedule:
     - cron: '* */4 * * *'    
 jobs:
