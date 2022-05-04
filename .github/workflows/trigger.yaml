@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ "11" ]
-  schedule:
-    - cron: '0 */3 * * *'    
+#   schedule:
+#     - cron: '0 */3 * * *'  
 jobs:
   Trigger:
     uses: ./.github/workflows/compile.yaml
