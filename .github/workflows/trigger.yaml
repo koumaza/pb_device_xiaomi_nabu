@@ -10,4 +10,4 @@ on:
     
 jobs:
   Trigger:
-    - uses: ./.github/workflows/compile.yaml
+    uses: ./.github/workflows/compile.yaml
