@@ -1,36 +1,6 @@
 name: Make nabu Recovery
 
 on:
-  workflow_call:
-    inputs:
-      LIBRARY_NAME:
-        description: 'LIBRARY_NAME'
-        required: true
-        default: 'omni'
-      LIBRARY_URL:
-        description: 'LIBRARY_URL'
-        required: true
-        default: 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
-      LIBRARY_BRANCH:
-        description: 'LIBRARY_BRANCH'
-        required: true
-        default: 'android-11.0'
-      DEVICE_URL:
-        description: 'DEVICE_URL'
-        required: true
-        default: 'https://github.com/koumaza/pb_device_xiaomi_nabu'
-      DEVICE_BRANCH:
-        description: 'DEVICE_BRANCH'
-        required: true
-        default: '11'
-      DEVICE_PATH:
-        description: 'DEVICE_PATH'
-        required: true
-        default: 'device/xiaomi/nabu'
-      DEVICE_NAME:
-        description: 'DEVICE_NAME'
-        required: true
-        default: 'nabu'
   workflow_dispatch:
     inputs:
       LIBRARY_NAME:
