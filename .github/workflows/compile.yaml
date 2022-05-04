@@ -113,6 +113,9 @@ jobs:
         PATH=~/bin:$PATH
         cd ${{ steps.pwd.outputs.pwd }}
         export USE_CCACHE=1
+        export CCACHE_DIR=${{ steps.pwd.outputs.pwd }}../.ccache
+        export CCACHE_EXEC='/usr/bin/env ccache'
+        export CCACHE_COMPRESS=1
         ccache -M 35G
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
