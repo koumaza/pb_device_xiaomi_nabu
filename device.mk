@@ -215,7 +215,9 @@ PRODUCT_PACKAGES += \
     vendor.xiaomi.hardware.display@1.0.vendor
 
 PRODUCT_PACKAGES += \
+    vendor.display.config@1.15 \
     vendor.display.config@1.15.vendor \
+    vendor.display.config@2.0 \
     vendor.display.config@2.0.vendor
 
 PRODUCT_PACKAGES += \
