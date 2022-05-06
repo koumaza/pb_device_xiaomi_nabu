@@ -1,4 +1,8 @@
 name: Make nabu Recovery
+env:
+  TZ: Asia/Tokyo
+  LIBRARY_NAME: 'omni'
+
 on:
   workflow_dispatch:
     inputs:
@@ -30,10 +34,6 @@ on:
         description: 'DEVICE_NAME'
         required: true
         default: 'nabu'
-
-env:
-  TZ: Asia/Tokyo
-  LIBRARY_NAME: 'omni'
   
 jobs:
   Build:
