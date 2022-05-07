@@ -47,8 +47,8 @@ on:
         default: 'nabu'
       debug_enabled:
         description: 'Enable tmate debugging'
-        default: false
         required: true
+        default: 'false'
 jobs:
   Build:
     defaults:
