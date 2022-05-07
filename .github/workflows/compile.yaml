@@ -77,6 +77,16 @@ jobs:
       run: |
         echo "::set-output name=date::$(date +%F)"
       id: var
+    - name: Set Git credential
+      run: |
+        case "${{ github.event_name }}" in
+          'schedule') name=${{ github.actor }} email=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/users/${{ github.actor }} | jq -r '.id')+${{ github.actor }}@users.noreply.github.com
+            break;;
+          *) name=${{ github.event.sender.login }} email=${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+            break;;
+        echo "::set-output name=${name}"
+        echo "::set-output email=${email}"
+      id: gitc
       
     - name: Set inputted variables (On Dispatch)
       if: github.event_name == 'workflow_dispatch'
@@ -88,6 +98,7 @@ jobs:
         echo ${{ github.event.inputs.DEVICE_BRANCH }} >> $DEVICE_BRANCH
         echo ${{ github.event.inputs.DEVICE_PATH }} >> $DEVICE_PATH
         echo ${{ github.event.inputs.DEVICE_NAME }} >> $DEVICE_NAME
+      
 
     - name: Prepare the environment
       run: |
@@ -100,6 +111,7 @@ jobs:
         sudo apt update
         sudo apt -y install android-tools-adb bc bison build-essential curl flex gcc-multilib git g++-multilib gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libtinfo5 libxml2 libxml2-utils lzop openjdk-8-jdk openssh-server pngcrush python rsync schedtool screen squashfs-tools xsltproc yasm zip zlib1g-dev bash-completion bc bison build-essential ccache curl flex gcc-multilib git git-core g++-multilib gnupg gperf imagemagick jq lib32ncurses5-dev lib32readline-dev lib32z1-dev lib32z-dev libbz2-dev libc6-dev-i386 libgl1-mesa-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libx11-dev libxml2 libxml2-utils lzma lzop ncftp openjdk-8-jdk pngcrush python qemu-user-static rsync schedtool squashfs-tools tree unzip x11proto-core-dev xsltproc zip zlib1g-dev
         sudo apt-get -y clean
+
     - name: Install repo
       run: |
         mkdir ~/bin
@@ -108,13 +120,16 @@ jobs:
         export PATH=~/bin:$PATH
       
     - name: Initialize repo
+      env:
+        git_name: ${{ steps.gitc.outputs.name }}
+        git_email: ${{ steps.gitc.outputs.email }}
       run: |
         PATH=~/bin:$PATH
         mkdir workspace
         cd workspace
         echo "::set-output name=pwd::$(pwd)"
-        git config --global user.name ${{ github.event.sender.login }}
-        git config --global user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+        git config --global user.name ${git_name}
+        git config --global user.email ${git_email}
         repo init --depth=1 -u ${{ env.LIBRARY_URL }} -b ${{ env.LIBRARY_BRANCH }}
       id: pwd
           
@@ -141,7 +156,7 @@ jobs:
         PATH=~/bin:$PATH
         cd ${{ steps.pwd.outputs.pwd }}
         export USE_CCACHE=1
-        export CCACHE_DIR=${{ steps.pwd.outputs.pwd }}../.ccache
+        export CCACHE_DIR=${{ steps.pwd.outputs.pwd }}/../.ccache
         export CCACHE_EXEC=$(type -p ccache)
         export CCACHE_COMPRESS=1
         ccache -M 35G
@@ -150,7 +165,7 @@ jobs:
         source build/envsetup.sh
         lunch ${{ env.LIBRARY_NAME }}_${{ env.DEVICE_NAME }}-eng
         make clean && make clobber
-        mka adbd bootimage -j$(nproc --all)
+        mka adbd bootimage -j$(($(nproc --all)*2))
         
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
