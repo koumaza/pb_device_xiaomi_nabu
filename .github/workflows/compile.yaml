@@ -55,6 +55,16 @@ jobs:
     runs-on: ubuntu-20.04
     
     steps:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@master
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Maximize build disk space
       uses: easimon/maximize-build-space@master
       with:
