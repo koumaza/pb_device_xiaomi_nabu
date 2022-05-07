@@ -70,9 +70,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
       
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@main
-      
     - name: Set variables
       run: |
         echo "::set-output name=date::$(date +%F)"
@@ -148,10 +145,17 @@ jobs:
         git clone https://github.com/LineageOS/android_device_qcom_sepolicy_vndr -b lineage-18.1 device/qcom/sepolicy_vndr
         #git clone https://github.com/PixelExperience/hardware_qcom-caf_sm8150_display -b eleven hardware/qcom-caf/sm8150/display
         git clone https://github.com/bm0x/hardware_qcom_sm8150_display -b 11 hardware/qcom-caf/sm8150/display
+    
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@main
+      with:
+        max-size: '35G'
+        verbose: 2
         
     - name: Building
       run: |
-        PATH=~/bin:$PATH
+        export PATH=~/bin:$PATH
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         cd ${{ steps.pwd.outputs.pwd }}
         export USE_CCACHE=1
         export CCACHE_DIR=${{ steps.pwd.outputs.pwd }}/../.ccache
