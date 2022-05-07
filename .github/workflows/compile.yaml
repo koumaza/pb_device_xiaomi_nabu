@@ -85,8 +85,8 @@ jobs:
           *) name=${{ github.event.sender.login }} email=${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
             ;;
         esac
-        echo "::set-output name=${name}"
-        echo "::set-output email=${email}"
+        echo "::set-output name=name::${name}"
+        echo "::set-output name=email::${email}"
       id: gitc
       
     - name: Set inputted variables (On Dispatch)
