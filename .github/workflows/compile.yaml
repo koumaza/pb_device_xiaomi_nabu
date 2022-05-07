@@ -84,6 +84,7 @@ jobs:
             break;;
           *) name=${{ github.event.sender.login }} email=${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
             break;;
+        esac
         echo "::set-output name=${name}"
         echo "::set-output email=${email}"
       id: gitc
