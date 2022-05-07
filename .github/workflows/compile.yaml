@@ -45,7 +45,10 @@ on:
         description: 'DEVICE_NAME'
         required: true
         default: 'nabu'
-  
+      debug_enabled:
+        description: 'Enable tmate debugging'
+        default: false
+        required: true
 jobs:
   Build:
     defaults:
