@@ -162,6 +162,7 @@ jobs:
         export CCACHE_EXEC=$(type -p ccache)
         export CCACHE_COMPRESS=1
         ccache -M 35G
+        ccache -p
         export ALLOW_MISSING_DEPENDENCIES=true
         export LC_ALL=C
         source build/envsetup.sh
