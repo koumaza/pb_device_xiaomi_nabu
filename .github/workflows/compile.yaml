@@ -154,6 +154,13 @@ jobs:
         
     - name: Building
       run: |
+        sudo su -c "\
+          free -m && cat /proc/meminfo && slabtop &&\
+          sync &&\
+          free -m && cat /proc/meminfo && slabtop &&\
+          echo 3 > /proc/sys/vm/drop_caches &&\
+          free -m && cat /proc/meminfo && slabtop \
+        "
         export PATH=~/bin:$PATH
         export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         cd ${{ steps.pwd.outputs.pwd }}
@@ -168,7 +175,7 @@ jobs:
         source build/envsetup.sh
         lunch ${{ env.LIBRARY_NAME }}_${{ env.DEVICE_NAME }}-eng
         make clean && make clobber
-        mka adbd bootimage -j$(($(nproc --all)*2))
+        mka adbd bootimage -j$(($(nproc --all)))
         
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
