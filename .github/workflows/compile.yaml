@@ -176,7 +176,7 @@ jobs:
         lunch ${{ env.LIBRARY_NAME }}_${{ env.DEVICE_NAME }}-eng
         make clean && make clobber
         #mka adbd bootimage -j$(($(nproc --all)/2)) || cat out/soong.log
-        mka pbrp -j$(($(nproc --all)/2)) || cat out/soong.log
+        mka pbrp -j$(($(nproc --all)/2)) || ! cat out/soong.log
         
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
