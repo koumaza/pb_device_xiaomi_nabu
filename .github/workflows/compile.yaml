@@ -175,7 +175,7 @@ jobs:
         source build/envsetup.sh
         lunch ${{ env.LIBRARY_NAME }}_${{ env.DEVICE_NAME }}-eng
         make clean && make clobber
-        mka adbd bootimage -j$(($(nproc --all)))
+        mka adbd bootimage -j$(($(nproc --all))) || cat out/soong.log
         
     # Enable tmate debugging of manually-triggered workflows if the input option was provided
     - name: Setup tmate session
