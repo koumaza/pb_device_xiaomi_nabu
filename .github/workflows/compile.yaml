@@ -155,11 +155,11 @@ jobs:
     - name: Building
       run: |
         sudo su -c "\
-          free -m && cat /proc/meminfo && slabtop &&\
+          free -m && cat /proc/meminfo && slabtop -o &&\
           sync &&\
-          free -m && cat /proc/meminfo && slabtop &&\
+          free -m && cat /proc/meminfo && slabtop -o &&\
           echo 3 > /proc/sys/vm/drop_caches &&\
-          free -m && cat /proc/meminfo && slabtop \
+          free -m && cat /proc/meminfo && slabtop -o \
         "
         export PATH=~/bin:$PATH
         export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
