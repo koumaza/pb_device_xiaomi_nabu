@@ -140,6 +140,7 @@ jobs:
         cd ${{ steps.pwd.outputs.pwd }}
         git clone ${{ env.DEVICE_URL }} -b ${{ env.DEVICE_BRANCH }} ./${{ env.DEVICE_PATH }}
         git clone https://github.com/LineageOS/android_hardware_xiaomi.git -b lineage-18.1 ./hardware/xiaomi
+        git clone https://github.com/LineageOS/android_vendor_qcom_opensource_interfaces.git -b lineage-18.1 vendor/qcom/opensource/interfaces
         git clone https://github.com/bm0x/android_vendor_xiaomi_sm8150-common -b 11 vendor/xiaomi/sm8150-common
         git clone https://github.com/bm0x/android_device_xiaomi_sm8150-common -b lineage-18.1 device/xiaomi/sm8150-common
         git clone https://github.com/LineageOS/android_device_qcom_sepolicy_vndr -b lineage-18.1 device/qcom/sepolicy_vndr
