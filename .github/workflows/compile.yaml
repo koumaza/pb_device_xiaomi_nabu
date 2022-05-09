@@ -89,13 +89,13 @@ jobs:
     - name: Set inputted variables (On Dispatch)
       if: github.event_name == 'workflow_dispatch'
       run: |
-        echo ${{ github.event.inputs.LIBRARY_NAME }} >> $LIBRARY_NAME
-        echo ${{ github.event.inputs.LIBRARY_URL }} >> $LIBRARY_URL
-        echo ${{ github.event.inputs.LIBRARY_BRANCH }} >> $LIBRARY_BRANCH
-        echo ${{ github.event.inputs.DEVICE_URL }} >> $DEVICE_URL
-        echo ${{ github.event.inputs.DEVICE_BRANCH }} >> $DEVICE_BRANCH
-        echo ${{ github.event.inputs.DEVICE_PATH }} >> $DEVICE_PATH
-        echo ${{ github.event.inputs.DEVICE_NAME }} >> $DEVICE_NAME
+        echo "${{ github.event.inputs.LIBRARY_NAME }}" >> $LIBRARY_NAME
+        echo "${{ github.event.inputs.LIBRARY_URL }}" >> $LIBRARY_URL
+        echo "${{ github.event.inputs.LIBRARY_BRANCH }}" >> $LIBRARY_BRANCH
+        echo "${{ github.event.inputs.DEVICE_URL }}" >> $DEVICE_URL
+        echo "${{ github.event.inputs.DEVICE_BRANCH }}" >> $DEVICE_BRANCH
+        echo "${{ github.event.inputs.DEVICE_PATH }}" >> $DEVICE_PATH
+        echo "${{ github.event.inputs.DEVICE_NAME }}" >> $DEVICE_NAME
       
 
     - name: Prepare the environment
