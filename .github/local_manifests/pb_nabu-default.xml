@@ -10,7 +10,7 @@
             fetch="https://github.com/koumaza" />
   
   
-    <project name="phhusson/vendor_lptools" path="external/lptools" remote="phhusson" revision="master" />
+    <!--project name="phhusson/vendor_lptools" path="external/lptools" remote="phhusson" revision="master" --/>
  
     <project path="hardware/xiaomi" name="android_hardware_xiaomi" remote="LineageOS" />
     <project path="vendor/qcom/opensource/interfaces" name="android_vendor_qcom_opensource_interfaces" remote="LineageOS" />
