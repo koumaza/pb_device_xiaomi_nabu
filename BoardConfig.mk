@@ -15,8 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
+ 
 # Bootloader
 BOARD_VENDOR := xiaomi
 PRODUCT_PLATFORM := msmnile
@@ -31,8 +30,6 @@ TARGET_BOARD_PLATFORM_GPU := qcom-adreno640
 QCOM_BOARD_PLATFORMS += msmnile
 BOARD_USES_QCOM_HARDWARE := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
-BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
-BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
 
 DEVICE_PATH := device/xiaomi/nabu
 
@@ -44,17 +41,18 @@ ALLOW_MISSING_DEPENDENCIES := true
 
 # Architecture
 TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-2a
+TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := kryo
+TARGET_CPU_VARIANT_RUNTIME := kryo485 
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-2a
+TARGET_2ND_ARCH_VARIANT := armv8-a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := cortex-a55
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
+TARGET_2ND_CPU_VARIANT := kryo
+TARGET_2ND_CPU_VARIANT_RUNTIME := kryo485
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := nabu
@@ -133,17 +131,15 @@ BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8 \
 		cgroup.memory=nokmem,nosocket \
 		reboot=panic_warm \
 		androidboot.init_fatal_reboot_target=recovery \
-        androidboot.selinux=permissive \
-        androidboot.vbmeta.avb_version=1.0 \
-        androidboot.boot_devices=soc/1d84000.ufshc
+        	androidboot.selinux=permissive \
+        	androidboot.vbmeta.avb_version=1.0 \
+        	androidboot.boot_devices=soc/1d84000.ufshc
         
 BOARD_KERNEL_BINARIES := kernel
 TARGET_KERNEL_CLANG_COMPILE := true
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_BOOT_HEADER_VERSION := 3
 BOARD_KERNEL_SEPARATED_DTBO := true
-KERNEL_LD := LD=ld.lld
-TARGET_KERNEL_ADDITIONAL_FLAGS += DTC_EXT=$(shell pwd)/prebuilts/misc/linux-x86/dtc/dtc LLVM=1
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/nabu-dtb.img
@@ -162,13 +158,10 @@ BOARD_KERNEL_OFFSET        := 0x00008000
 BOARD_KERNEL_SECOND_OFFSET := 0x00000000
 BOARD_RAMDISK_OFFSET       := 0x01000000
 BOARD_DTB_OFFSET           := 0x01f00000
-BOARD_VENDOR_BASE		   := 0x00000000
-BOARD_HEADER_SIZE		   := 2112
+BOARD_VENDOR_BASE	   := 0x00000000
+BOARD_HEADER_SIZE	   := 2112
 BOARD_KERNEL_PAGESIZE := 4096
 TARGET_KERNEL_ARCH := arm64
-TARGET_KERNEL_ADDITIONAL_FLAGS += LLVM=1
-TARGET_KERNEL_ADDITIONAL_FLAGS := LD=ld.lld AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip
-TARGET_KERNEL_ADDITIONAL_FLAGS += HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
 BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
@@ -216,7 +209,6 @@ TARGET_PLATFORM_DEVICE_BASE := /devices/soc/
 BOARD_RAMDISK_USE_LZ4 := true
 
  # Landscape orientation:
-#
 TW_THEME := portrait_hdpi
 #RECOVERY_TOUCHSCREEN_SWAP_XY := true
 #RECOVERY_TOUCHSCREEN_FLIP_Y := true
@@ -237,9 +229,9 @@ TARGET_RECOVERY_INITRC := $(DEVICE_PATH)/recovery/rootdir/etc/init.recovery.qcom
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
 
-BUILD_WITHOUT_VENDOR := true
+BUILD_WITHOUT_VENDOR := false
 
-# Power
+# Power 
 TARGET_USES_INTERACTION_BOOST := true
 
 # Hack: prevent anti rollback 
@@ -258,7 +250,6 @@ PRODUCT_ENFORCE_VINTF_MANIFEST := true
 TW_DEVICE_VERSION := Xiaomi_Pad_5-bm0x_Testing
 TW_HAS_NO_RECOVERY_PARTITION := true
 RECOVERY_SDCARD_ON_DATA := true
-TW_USE_MODEL_HARDWARE_ID_FOR_DEVICE_ID := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_EXTRA_LANGUAGES := true
 TW_INCLUDE_NTFS_3G := true

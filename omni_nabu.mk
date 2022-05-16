@@ -28,7 +28,8 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Inherit from nabu device
 $(call inherit-product, device/xiaomi/nabu/device.mk)
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_minimal.mk) 
+$(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
 # Inherit some common Omni stuff.
 $(call inherit-product, vendor/pb/config/common.mk)
