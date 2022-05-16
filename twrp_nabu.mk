@@ -28,10 +28,11 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Inherit from nabu device
 $(call inherit-product, device/xiaomi/nabu/device.mk)
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_minimal.mk) 
+$(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
-# Inherit some common Omni stuff.
-#$(call inherit-product, vendor/twrp/config/common.mk)
+# Inherit some common TWRP stuff.
+$(call inherit-product, vendor/twrp/config/common.mk)
 
 PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,device/xiaomi/nabu/recovery/root,recovery/root) \
 $(call find-copy-subdir-files,*,$(LOCAL_PATH)/recovery/root/vendor/firmware,$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware) \

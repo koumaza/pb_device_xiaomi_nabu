@@ -22,9 +22,6 @@ LOCAL_PATH := device/xiaomi/nabu
 PRODUCT_TARGET_VNDK_VERSION := 30
 PRODUCT_SHIPPING_API_LEVEL := 30
 
-# Enforce java interfaces of product partition
-PRODUCT_ENFORCE_PRODUCT_PARTITION_INTERFACE := true
-
 # Enable updating of APEXes
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
@@ -98,8 +95,8 @@ PRODUCT_PACKAGES += \
     android.hardware.boot@1.2-impl-wrapper.recovery \
     android.hardware.boot@1.2-impl-wrapper \
     android.hardware.boot@1.2-impl.recovery \
-    bootctrl.$(PRODUCT_PLATFORM) \
-    bootctrl.$(PRODUCT_PLATFORM).recovery \
+    bootctrl.msmnile \
+    bootctrl.msmnile.recovery \
     libgptutils \
     libz \
     libcutils
