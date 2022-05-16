@@ -19,7 +19,7 @@
     <!--project path="hardware/qcom-caf/sm8150/display" name="hardware_qcom-caf_sm8150_display" remote="PixelExperience" revision="eleven" /-->
   
     <project path="vendor/xiaomi/sm8150-common" name="android_vendor_xiaomi_sm8150-common" remote="bm0x" revision="11" />
-    <project path="device/xiaomi/sm8150-common" name="aandroid_device_xiaomi_sm8150-common" remote="bm0x" revision="lineage-18.1" />
+    <project path="device/xiaomi/sm8150-common" name="android_device_xiaomi_sm8150-common" remote="bm0x" revision="lineage-18.1" />
   
     <project path="hardware/qcom-caf/sm8150/display" name="hardware_qcom_sm8150_display" remote="koumaza" revision="11" />
 
