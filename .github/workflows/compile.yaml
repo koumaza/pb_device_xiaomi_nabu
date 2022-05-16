@@ -126,6 +126,8 @@ jobs:
         git config --global user.name ${{ steps.gitc.outputs.name }}
         git config --global user.email ${{ steps.gitc.outputs.email }}
         repo init --depth=1 -u ${{ env.LIBRARY_URL }} -b ${{ env.LIBRARY_BRANCH }}
+        
+        cp -r ../.github/local_manifests .repo/local_manifests
       id: pwd
           
     - name: Repo sync
@@ -139,13 +141,13 @@ jobs:
         PATH=~/bin:$PATH
         cd ${{ steps.pwd.outputs.pwd }}
         git clone ${{ env.DEVICE_URL }} -b ${{ env.DEVICE_BRANCH }} ./${{ env.DEVICE_PATH }}
-        git clone https://github.com/LineageOS/android_hardware_xiaomi.git -b lineage-18.1 ./hardware/xiaomi
-        git clone https://github.com/LineageOS/android_vendor_qcom_opensource_interfaces.git -b lineage-18.1 vendor/qcom/opensource/interfaces
-        git clone https://github.com/bm0x/android_vendor_xiaomi_sm8150-common -b 11 vendor/xiaomi/sm8150-common
-        git clone https://github.com/bm0x/android_device_xiaomi_sm8150-common -b lineage-18.1 device/xiaomi/sm8150-common
-        git clone https://github.com/LineageOS/android_device_qcom_sepolicy_vndr -b lineage-18.1 device/qcom/sepolicy_vndr
-        #git clone https://github.com/PixelExperience/hardware_qcom-caf_sm8150_display -b eleven hardware/qcom-caf/sm8150/display
-        git clone https://github.com/koumaza/hardware_qcom_sm8150_display -b 11 hardware/qcom-caf/sm8150/display
+        #git clone https://github.com/LineageOS/android_hardware_xiaomi.git -b lineage-18.1 ./hardware/xiaomi
+        #git clone https://github.com/LineageOS/android_vendor_qcom_opensource_interfaces.git -b lineage-18.1 vendor/qcom/opensource/interfaces
+        #git clone https://github.com/bm0x/android_vendor_xiaomi_sm8150-common -b 11 vendor/xiaomi/sm8150-common
+        #git clone https://github.com/bm0x/android_device_xiaomi_sm8150-common -b lineage-18.1 device/xiaomi/sm8150-common
+        #git clone https://github.com/LineageOS/android_device_qcom_sepolicy_vndr -b lineage-18.1 device/qcom/sepolicy_vndr
+        ##git clone https://github.com/PixelExperience/hardware_qcom-caf_sm8150_display -b eleven hardware/qcom-caf/sm8150/display
+        #git clone https://github.com/koumaza/hardware_qcom_sm8150_display -b 11 hardware/qcom-caf/sm8150/display
     
     - name: ccache
       uses: hendrikmuhs/ccache-action@main
