@@ -1,0 +1,199 @@
+name: Make nabu Recovery
+
+env:
+  TZ: Asia/Tokyo
+  LIBRARY_NAME: 'omni'
+  LIBRARY_URL: 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
+  LIBRARY_BRANCH: 'android-11.0'
+  DEVICE_URL: 'https://github.com/koumaza/pb_device_xiaomi_nabu'
+  DEVICE_BRANCH: '11'
+  DEVICE_PATH: 'device/xiaomi/nabu'
+  DEVICE_NAME: 'nabu'
+
+on:
+  push:
+    branches-ignore: ''
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+    inputs:
+      LIBRARY_NAME:
+        description: 'LIBRARY_NAME'
+        required: true
+        default: 'omni'
+      LIBRARY_URL:
+        description: 'LIBRARY_URL'
+        required: true
+        default: 'https://github.com/PitchBlackRecoveryProject/manifest_pb'
+      LIBRARY_BRANCH:
+        description: 'LIBRARY_BRANCH'
+        required: true
+        default: 'android-11.0'
+      DEVICE_URL:
+        description: 'DEVICE_URL'
+        required: true
+        default: 'https://github.com/koumaza/pb_device_xiaomi_nabu'
+      DEVICE_BRANCH:
+        description: 'DEVICE_BRANCH'
+        required: true
+        default: '11'
+      DEVICE_PATH:
+        description: 'DEVICE_PATH'
+        required: true
+        default: 'device/xiaomi/nabu'
+      DEVICE_NAME:
+        description: 'DEVICE_NAME'
+        required: true
+        default: 'nabu'
+      debug_enabled:
+        description: 'Enable tmate debugging'
+        required: true
+        default: 'false'
+jobs:
+  Build:
+    defaults:
+      run:
+        shell: bash
+    # if: github.event.repository.owner.id == github.event.sender.id
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Maximize build disk space
+      uses: easimon/maximize-build-space@master
+      with:
+        root-reserve-mb: 1024
+        swap-size-mb: 7000
+        remove-dotnet: 'true'
+        temp-reserve-mb: 1024
+        remove-android: 'true'
+        remove-haskell: 'true'
+
+    - name: Checkout
+      uses: actions/checkout@main
+      
+    - name: Set variables
+      run: |
+        echo "::set-output name=date::$(date +%F)"
+      id: var
+    - name: Set Git credential
+      run: |
+        case "${{ github.event_name }}" in
+          'schedule') name=${{ github.actor }} email=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/users/${{ github.actor }} | jq -r '.id')+${{ github.actor }}@users.noreply.github.com
+            ;;
+          *) name=${{ github.event.sender.login }} email=${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+            ;;
+        esac
+        echo "::set-output name=name::${name}"
+        echo "::set-output name=email::${email}"
+      id: gitc
+      
+    - name: Set inputted variables (On Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        echo "${{ github.event.inputs.LIBRARY_NAME }}" >> $LIBRARY_NAME
+        echo "${{ github.event.inputs.LIBRARY_URL }}" >> $LIBRARY_URL
+        echo "${{ github.event.inputs.LIBRARY_BRANCH }}" >> $LIBRARY_BRANCH
+        echo "${{ github.event.inputs.DEVICE_URL }}" >> $DEVICE_URL
+        echo "${{ github.event.inputs.DEVICE_BRANCH }}" >> $DEVICE_BRANCH
+        echo "${{ github.event.inputs.DEVICE_PATH }}" >> $DEVICE_PATH
+        echo "${{ github.event.inputs.DEVICE_NAME }}" >> $DEVICE_NAME
+      
+
+    - name: Prepare the environment
+      run: |
+        docker rmi `docker images -q`
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/sudo apt/sources.list.d
+        sudo apt -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo apt -y autoremove --purge
+        sudo apt -y autoclean
+        sudo apt clean
+        sudo apt update
+        sudo apt -y install android-tools-adb bc bison build-essential curl flex gcc-multilib git g++-multilib gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libtinfo5 libxml2 libxml2-utils lzop openjdk-8-jdk openssh-server pngcrush python rsync schedtool screen squashfs-tools xsltproc yasm zip zlib1g-dev bash-completion bc bison build-essential ccache curl flex gcc-multilib git git-core g++-multilib gnupg gperf imagemagick jq lib32ncurses5-dev lib32readline-dev lib32z1-dev lib32z-dev libbz2-dev libc6-dev-i386 libgl1-mesa-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libx11-dev libxml2 libxml2-utils lzma lzop ncftp openjdk-8-jdk pngcrush python qemu-user-static rsync schedtool squashfs-tools tree unzip x11proto-core-dev xsltproc zip zlib1g-dev
+        sudo apt-get -y clean
+
+    - name: Install repo
+      run: |
+        mkdir ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        export PATH=~/bin:$PATH
+      
+    - name: Initialize repo
+      run: |
+        PATH=~/bin:$PATH
+        mkdir workspace
+        cd workspace
+        echo "::set-output name=pwd::$(pwd)"
+        git config --global user.name ${{ steps.gitc.outputs.name }}
+        git config --global user.email ${{ steps.gitc.outputs.email }}
+        repo init --depth=1 -u ${{ env.LIBRARY_URL }} -b ${{ env.LIBRARY_BRANCH }}
+        
+        cp -r ../.github/local_manifests .repo/local_manifests
+      id: pwd
+          
+    - name: Repo sync
+      run: |
+        PATH=~/bin:$PATH
+        cd workspace
+        repo sync -j$(nproc --all) --force-sync
+      
+    - name: Clone device
+      run: |
+        PATH=~/bin:$PATH
+        cd ${{ steps.pwd.outputs.pwd }}
+        git clone ${{ env.DEVICE_URL }} -b ${{ env.DEVICE_BRANCH }} ./${{ env.DEVICE_PATH }}
+        #git clone https://github.com/LineageOS/android_hardware_xiaomi.git -b lineage-18.1 ./hardware/xiaomi
+        #git clone https://github.com/LineageOS/android_vendor_qcom_opensource_interfaces.git -b lineage-18.1 vendor/qcom/opensource/interfaces
+        #git clone https://github.com/bm0x/android_vendor_xiaomi_sm8150-common -b 11 vendor/xiaomi/sm8150-common
+        #git clone https://github.com/bm0x/android_device_xiaomi_sm8150-common -b lineage-18.1 device/xiaomi/sm8150-common
+        #git clone https://github.com/LineageOS/android_device_qcom_sepolicy_vndr -b lineage-18.1 device/qcom/sepolicy_vndr
+        ##git clone https://github.com/PixelExperience/hardware_qcom-caf_sm8150_display -b eleven hardware/qcom-caf/sm8150/display
+        #git clone https://github.com/koumaza/hardware_qcom_sm8150_display -b 11 hardware/qcom-caf/sm8150/display
+    
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@main
+      with:
+        max-size: '35G'
+        verbose: 2
+        
+    - name: Building
+      run: |
+        sudo su -c "\
+          free -m && cat /proc/meminfo && slabtop -o &&\
+          sync &&\
+          free -m && cat /proc/meminfo && slabtop -o &&\
+          echo 3 > /proc/sys/vm/drop_caches &&\
+          free -m && cat /proc/meminfo && slabtop -o \
+        "
+        export PATH=~/bin:$PATH
+        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        cd ${{ steps.pwd.outputs.pwd }}
+        export USE_CCACHE=1
+        export CCACHE_DIR=${{ steps.pwd.outputs.pwd }}/../.ccache
+        export CCACHE_EXEC=$(type -p ccache)
+        export CCACHE_COMPRESS=1
+        ccache -M 35G
+        ccache -p
+        export ALLOW_MISSING_DEPENDENCIES=true
+        export LC_ALL=C
+        source build/envsetup.sh
+        lunch ${{ env.LIBRARY_NAME }}_${{ env.DEVICE_NAME }}-eng
+        make clean && make clobber
+        #mka adbd bootimage -j$(($(nproc --all)/2)) || cat out/soong.log
+        mka pbrp -j$(($(nproc --all)/4)) || ! cat out/soong.log
+        
+    # Enable tmate debugging of manually-triggered workflows if the input option was provided
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@master
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+        
+    - name: Upload to Release
+      uses: softprops/action-gh-release@master
+      with:
+        files: |
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/boot.img
+        name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
+        tag_name: ${{ github.run_id }}
+        body: Recovery for ${{ github.event.inputs.DEVICE_NAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.work }}
